@@ -9,8 +9,7 @@ theanoFloat = theano.config.floatX
 
 
 class MultilayerPerceptron:
-    def __init__(self, topology, learningRate=0.01, momentum = 0.1, initialWeights=None,
-                 initialBiases=None):
+    def __init__(self, topology, learningRate=0.01, momentum = 0.1):
         self.topology = topology
         self.numberOfLayers = len(topology)
         self.learningRate = learningRate
@@ -28,19 +27,26 @@ class MultilayerPerceptron:
         #                              name='W')
         # self.biases = theano.shared(value=np.asarray(self.biases,dtype=theanoFloat),
         #                             name='bvis')
-        initWeights = np.asarray(np.random.uniform(
-                      low=-4 * np.sqrt(6. / (topology[0] + topology[1])),
-                      high=4 * np.sqrt(6. / (topology[0] + topology[1])),
-                      size=(topology[0], topology[1])), dtype=theanoFloat)
+
+        initWeights = []
+        initBiases = []
+
+        for i in xrange(len(topology) - 1):
+            initWeights.append(np.asarray(np.random.uniform(
+                      low=-4 * np.sqrt(6. / (topology[i] + topology[i + 1])),
+                      high=4 * np.sqrt(6. / (topology[i] + topology[i + 1])),
+                      size=(topology[i], topology[i + 1])), dtype=theanoFloat))
+
+            initBiases.append(np.zeros(topology[i + 1], dtype=theanoFloat))
+
 
         # initWeights = np.asarray(np.random.uniform(
-        #               low=-4 * np.sqrt(6. / (1 + topology[0])),
-        #               high=4 * np.sqrt(6. / (1 + topology[0])),
-        #               size=topology[0]), dtype=theano.config.floatX)
-        self.weights = theano.shared(value=np.asarray(initWeights,
-                                  dtype=theano.config.floatX),
-                        name='W')
-        self.biases = theano.shared(np.zeros(topology[1], dtype=theanoFloat))
+        #               low=-4 * np.sqrt(6. / (topology[0] + topology[1])),
+        #               high=4 * np.sqrt(6. / (topology[0] + topology[1])),
+        #               size=(topology[0], topology[1])), dtype=theanoFloat)
+
+        self.weights = theano.shared(value=np.asarray(initWeights, dtype=theanoFloat), name='W')
+        self.biases = theano.shared(value=np.asarray(initBiases), name="B")
         # self.biases = theano.shared(0., name='bvis')
 
     def train(self, data, labels, numberOfEpochs=10000):
@@ -50,14 +56,14 @@ class MultilayerPerceptron:
         print "data shape" + str(data.shape)
         print "data labels" + str(labels.shape)
         print "data weighs" + str(self.weights.shape)
-        print "data biases" + str(self.biases.shape)
+        # print "data biases" + str(self.biases.shape)
 
         # The mini-batch data is a matrix
         X = T.matrix(name='X', dtype=theanoFloat)
         # labels[start:end] this needs to be a matrix because we output probabilities
         Y = T.matrix(name='y', dtype=theanoFloat)
 
-        potential = T.dot(X, self.weights) + self.biases
+        potential = T.dot(X, self.weights[0]) + self.biases[0]
         activation = potential
         cost = T.sum((activation - Y) ** 2)
         gw, gb = T.grad(cost, [self.weights, self.biases])
