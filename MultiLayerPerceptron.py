@@ -45,7 +45,7 @@ class MultilayerPerceptron:
         propagatedData = dataSymbolic
         potential = T.dot(propagatedData, self.weights[0]) + self.biases[0]
         activation = potential
-        cost = T.sum((activation - labelsSymbolic) ** 2)
+        cost = T.sum(self.costFunction.cost(activation, labelsSymbolic))
         gw, gb = T.grad(cost, [self.weights, self.biases])
         train = theano.function(inputs=[dataSymbolic, labelsSymbolic], outputs=[activation, cost],
                                 updates=
