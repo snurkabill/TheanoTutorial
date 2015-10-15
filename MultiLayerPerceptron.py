@@ -44,7 +44,7 @@ class MultilayerPerceptron:
 
         propagatedData = dataSymbolic
         potential = T.dot(propagatedData, self.weights[0]) + self.biases[0]
-        activation = potential
+        activation = self.lastActivationFunction.deterministic(potential)
         cost = T.sum(self.costFunction.cost(activation, labelsSymbolic))
         gw, gb = T.grad(cost, [self.weights, self.biases])
         train = theano.function(inputs=[dataSymbolic, labelsSymbolic], outputs=[activation, cost],
@@ -52,7 +52,9 @@ class MultilayerPerceptron:
                                 [[self.weights, self.weights - self.learningRate * gw],
                                  [self.biases, self.biases - self.learningRate * gb]],
                                 name="optimize")
-        theano.printing.pydotprint(cost, outfile="cost.png", var_with_name_simple=True)
+        theano.printing.pydotprint(train, outfile="cost.png", var_with_name_simple=True)
         for i in xrange(numberOfEpochs):
-            propagatedValues, error = train(data, labels)
-            print "Error: " + str(error)
+            train(data, labels)
+
+        propagatedValues, error = train(data, labels)
+        print "Error: " + str(error)
