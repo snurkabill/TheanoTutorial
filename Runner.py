@@ -4,8 +4,6 @@ from theano import tensor as T
 import numpy as np
 from numpy import matrix
 import time
-from ActivationFunctions import Sigmoid, ApproximatedRectified, Rectified, Identity
-
 from Adaline import MineAdaline
 
 from scipy import linalg
@@ -13,7 +11,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib import colors
-from CostFunctions import LeastSquares
 
 import MultiLayerPerceptron
 
@@ -34,8 +31,7 @@ def main():
     # print str(model.W.get_value())
     # print str(model.biasVisible.get_value())
 
-    asfd = MultiLayerPerceptron.MultilayerPerceptron(topology=[2, 2], costFunction=LeastSquares(), learningRate=0.0001,
-                                                     activationFunction=Rectified(), lastActivationFunction=Identity())
+    asfd = MultiLayerPerceptron.MultilayerPerceptron(topology=[2, 2], learningRate=0.0001)
     asfd.train(X, y)
 
 

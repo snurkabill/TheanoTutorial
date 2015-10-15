@@ -1,27 +1,20 @@
-from Utils import zerosFromShape, shuffle
 
 __author__ = 'snurkabill'
 
 import theano
 import numpy as np
 from theano import tensor as T
-from ActivationFunctions import Rectified
-from ActivationFunctions import Identity
 
 theanoFloat = theano.config.floatX
 
 
 class MultilayerPerceptron:
-    def __init__(self, topology, costFunction, learningRate=0.01, momentum = 0.1, activationFunction=Rectified(),
-                 lastActivationFunction=Identity(), initialWeights=None,
+    def __init__(self, topology, learningRate=0.01, momentum = 0.1, initialWeights=None,
                  initialBiases=None):
         self.topology = topology
         self.numberOfLayers = len(topology)
         self.learningRate = learningRate
         self.momentum = momentum
-        self.activationFunction = activationFunction
-        self.lastActivationFunction = lastActivationFunction
-        self.costFunction = costFunction
         # self.weights = []
         # self.biases = []
         #
