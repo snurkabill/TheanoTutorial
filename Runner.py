@@ -31,7 +31,7 @@ def main():
     # print str(model.W.get_value())
     # print str(model.biasVisible.get_value())
 
-    asfd = MultiLayerPerceptron.MultilayerPerceptron(topology=[2, 2], learningRate=0.0001)
+    asfd = MultiLayerPerceptron.MultilayerPerceptron(topology=[2, 2], learningRate=0.001)
     asfd.train(X, y)
 
 
